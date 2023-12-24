@@ -9,6 +9,7 @@ import com.tochie.Traskit.model.User;
 import com.tochie.Traskit.pojo.UserObject;
 import com.tochie.Traskit.repository.RoleRepository;
 import com.tochie.Traskit.repository.UserRepository;
+import com.tochie.Traskit.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,9 @@ public class UserService {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private UserAuth userAuth;
 
 
     public ResponseData addUser(SignUpDTO signUpDto){
@@ -102,11 +106,11 @@ public class UserService {
             return responseData;
         }
 
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getUsernameOrEmail(), loginDTO.getPassword())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        userAuth.authenticateUser(loginDTO.getUsernameOrEmail());
 
         responseData.assignResponseCode(ResponseCodeEnum.SUCCESS.getCode(), "User log in successful");
 
