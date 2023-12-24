@@ -21,6 +21,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 @Slf4j
@@ -36,6 +37,8 @@ public class JwtService {
     private UserDetailsServiceImpl userDetailsService;
 
     private UserDetails userDetails;
+
+    private ConcurrentHashMap<String, String> blacklistCache = new ConcurrentHashMap<>();
 
 
     public String resolveToken(HttpServletRequest req) {
@@ -103,10 +106,10 @@ public class JwtService {
     public Boolean validateToken(String token) {
         final String username = extractUsername(token);
 
-        if(!validateTokenKey(token)) return false;
+        if(!validateTokenKey(token) | blacklistCache.containsKey(token)) return false;
+        blacklistCache.put(token, username);
 
         userDetails = getUserDetails(extractUsername(token));
-        log.error(" Username is : {}, userDetails username : {}, isTokenExpired : {}", username, userDetails.getUsername(), isTokenExpired(token));
 
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
@@ -126,7 +129,6 @@ public class JwtService {
         request.setAttribute("user", userDetails);
 
         String jwt = "Bearer ".concat(generateToken(userDetails.getUsername()));
-        log.error(" new token is : "+ jwt);
 
         response.addHeader("Authorization" , jwt);
 
