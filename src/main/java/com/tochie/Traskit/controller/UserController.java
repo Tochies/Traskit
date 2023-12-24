@@ -6,19 +6,21 @@ import com.tochie.Traskit.model.Role;
 import com.tochie.Traskit.model.User;
 import com.tochie.Traskit.repository.RoleRepository;
 import com.tochie.Traskit.repository.UserRepository;
+import com.tochie.Traskit.security.JwtService;
 import com.tochie.Traskit.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 
@@ -29,6 +31,15 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+
+
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@RequestBody LoginDTO loginDTO){
@@ -43,6 +54,30 @@ public class UserController {
         return new ResponseEntity<>(userService.addUser(signUpDto), HttpStatus.OK);
 
     }
+
+
+    @GetMapping("/user/userProfile")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public String userProfile() {
+        return "Welcome to User Profile";
+    }
+
+    @GetMapping("/admin/adminProfile")
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public String adminProfile() {
+        UserDetails username = (UserDetails) request.getAttribute("user");
+        return "Welcome to Admin Profile, " + username.getUsername();
+    }
+
+//    @PostMapping("/generateToken")
+//    public String authenticateAndGetToken(@RequestBody LoginDTO loginDTO) {
+//        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDTO.getUsernameOrEmail(), loginDTO.getPassword()));
+//        if (authentication.isAuthenticated()) {
+//            return jwtService.generateToken(loginDTO.getUsernameOrEmail());
+//        } else {
+//            throw new UsernameNotFoundException("invalid user request !");
+//        }
+//    }
 
 
 }
