@@ -11,7 +11,7 @@ public enum ResponseCodeEnum {
     DUPLICATE_EMAIL(20, "Email or username already exists"),
     SERVICE_NOT_AVAILABLE(6, "Service currently unavailable, please try again later"),
     SERVICE_FAILURE(7, "Request failed please contact support"),
-
+    VALIDATION_ERROR(-9, "Request failed validation"),
 
             ;
 

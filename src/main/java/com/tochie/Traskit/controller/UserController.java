@@ -2,6 +2,9 @@ package com.tochie.Traskit.controller;
 
 import com.tochie.Traskit.dto.LoginDTO;
 import com.tochie.Traskit.dto.SignUpDTO;
+import com.tochie.Traskit.dto.apiresponse.BaseResponse;
+import com.tochie.Traskit.enums.ResponseCodeEnum;
+import com.tochie.Traskit.exception.ErrorResponse;
 import com.tochie.Traskit.model.Role;
 import com.tochie.Traskit.model.User;
 import com.tochie.Traskit.repository.RoleRepository;
@@ -33,8 +36,6 @@ public class UserController {
     UserService userService;
 
 
-
-
     @Autowired
     private HttpServletRequest request;
 
@@ -56,18 +57,7 @@ public class UserController {
     }
 
 
-    @GetMapping("/user/userProfile")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
-    public String userProfile() {
-        return "Welcome to User Profile";
-    }
 
-    @GetMapping("/admin/adminProfile")
-    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public String adminProfile() {
-        UserDetails username = (UserDetails) request.getAttribute("user");
-        return "Welcome to Admin Profile, " + username.getUsername();
-    }
 
 //    @PostMapping("/generateToken")
 //    public String authenticateAndGetToken(@RequestBody LoginDTO loginDTO) {
