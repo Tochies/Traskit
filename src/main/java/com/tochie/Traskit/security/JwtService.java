@@ -1,10 +1,7 @@
 package com.tochie.Traskit.security;
 
 import com.tochie.Traskit.service.UserDetailsServiceImpl;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -104,14 +101,22 @@ public class JwtService {
 
 
     public Boolean validateToken(String token) {
-        final String username = extractUsername(token);
 
-        if(!validateTokenKey(token) | blacklistCache.containsKey(token)) return false;
-        blacklistCache.put(token, username);
+        try {
+            final String username = extractUsername(token);
 
-        userDetails = getUserDetails(extractUsername(token));
+            if(!validateTokenKey(token) | blacklistCache.containsKey(token) | username == null) return false;
+            blacklistCache.put(token, username);
 
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+            userDetails = getUserDetails(username);
+
+            return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e){
+            log.warn("JWTOtherException: {}", e.getMessage());
+         return false;
+        }
+
+
     }
 
     public boolean validateTokenKey(String token) {
@@ -122,6 +127,7 @@ public class JwtService {
         }
 
         return true;
+
     }
 
     public Authentication getAuthentication(HttpServletResponse response, HttpServletRequest request) {

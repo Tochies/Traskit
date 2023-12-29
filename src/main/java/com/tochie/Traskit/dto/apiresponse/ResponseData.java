@@ -4,10 +4,7 @@ import com.tochie.Traskit.enums.ResponseCodeEnum;
 import lombok.Data;
 
 @Data
-public class ResponseData {
-
-    private Integer code;
-    private String description;
+public class ResponseData extends BaseResponse{
 
     public void assignResponseCode(ResponseCodeEnum responseCodeEnum) {
         setCode(responseCodeEnum.getCode());
