@@ -2,7 +2,6 @@ package com.tochie.Traskit.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tochie.Traskit.enums.ResponseCodeEnum;
-import com.tochie.Traskit.exception.CustomException;
 import com.tochie.Traskit.exception.ErrorResponse;
 import com.tochie.Traskit.exception.GenericException;
 import jakarta.servlet.FilterChain;

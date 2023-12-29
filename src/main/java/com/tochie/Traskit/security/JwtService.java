@@ -1,6 +1,5 @@
 package com.tochie.Traskit.security;
 
-import com.tochie.Traskit.exception.GenericException;
 import com.tochie.Traskit.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -114,7 +113,7 @@ public class JwtService {
             return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e){
             log.warn("JWTOtherException: {}", e.getMessage());
-            return false;
+         return false;
         }
 
 
