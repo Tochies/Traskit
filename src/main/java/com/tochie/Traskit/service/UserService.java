@@ -96,19 +96,10 @@ public class UserService {
         ResponseData responseData = new ResponseData();
         responseData.assignResponseCode(ResponseCodeEnum.INVALID_REQUEST);
 
-        UserDetails userDetails ;
-
-        try {
-            userDetails = userDetailsService.loadUserByUsername(loginDTO.getUsernameOrEmail());
-        } catch (UsernameNotFoundException e){
-
-            responseData.assignResponseCode(ResponseCodeEnum.USER_NOT_FOUND);
-            return responseData;
-        }
-
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDTO.getUsernameOrEmail(), loginDTO.getPassword())
         );
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         userAuth.authenticateUser(loginDTO.getUsernameOrEmail());
 

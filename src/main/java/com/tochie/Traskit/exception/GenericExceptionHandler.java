@@ -4,6 +4,7 @@ import com.tochie.Traskit.enums.Constants;
 import com.tochie.Traskit.enums.ResponseCodeEnum;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -27,6 +28,17 @@ public class GenericExceptionHandler {
         return new ResponseEntity<>(errorResponse, badRequest);
     }
 
+    @ExceptionHandler(value = {BadCredentialsException.class})
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException e){
+
+        HttpStatus badRequest = HttpStatus.BAD_REQUEST;
+        ErrorResponse errorResponse = ErrorResponse.ErrorResponseBuilder.anErrorResponse()
+                .withDescription("Username/password invalid")
+                .withResponseCode(ResponseCodeEnum.FAILED_AUTHENTICATION.getCode())
+                .build();
+        return new ResponseEntity<>(errorResponse, badRequest);
+    }
+
     @ExceptionHandler(value = {CustomException.class})
     public ResponseEntity<Object> handleCustomException(CustomException e){
 
@@ -35,14 +47,13 @@ public class GenericExceptionHandler {
                 .withResponseCode(e.getCode())
                 .build();
 
-
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
 
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity handle(MethodArgumentNotValidException ex) {
+    public ResponseEntity handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
         List<ObjectError> allErrors = ex.getAllErrors();
 
 
