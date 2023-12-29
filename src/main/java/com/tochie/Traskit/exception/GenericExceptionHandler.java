@@ -39,6 +39,17 @@ public class GenericExceptionHandler {
         return new ResponseEntity<>(errorResponse, badRequest);
     }
 
+    @ExceptionHandler(value = {Exception.class})
+    public ResponseEntity<Object> handleException(Exception e){
+
+        ErrorResponse errorResponse = ErrorResponse.ErrorResponseBuilder.anErrorResponse()
+                .withDescription(e.getMessage())
+                .withResponseCode(ResponseCodeEnum.SERVICE_FAILURE.getCode())
+                .build();
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(value = {CustomException.class})
     public ResponseEntity<Object> handleCustomException(CustomException e){
 
