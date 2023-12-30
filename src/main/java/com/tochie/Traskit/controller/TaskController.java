@@ -1,20 +1,20 @@
 package com.tochie.Traskit.controller;
 
+import com.tochie.Traskit.dto.TaskCreationDTO;
 import com.tochie.Traskit.dto.apiresponse.BaseResponse;
 import com.tochie.Traskit.dto.apiresponse.ResponseData;
 import com.tochie.Traskit.enums.ResponseCodeEnum;
 import com.tochie.Traskit.exception.ErrorResponse;
-import jakarta.annotation.PostConstruct;
+import com.tochie.Traskit.service.TaskService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -27,7 +27,10 @@ public class TaskController {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    UserDetails username;
+    UserDetails userDetails;
+
+    @Autowired
+    TaskService taskService;
 
 
     @GetMapping("/user/userProfile")
@@ -46,9 +49,22 @@ public class TaskController {
 
         BaseResponse response = new ResponseData();
         response.setCode(ResponseCodeEnum.SUCCESS.getCode());
-        response.setDescription("Welcome to Admin Profile, " + username.getUsername());
+        response.setDescription("Welcome to Admin Profile, " + userDetails.getUsername());
       return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PostMapping("/create-task")
+    @ResponseBody
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    public ResponseEntity<?> createTask(@Valid @RequestBody TaskCreationDTO taskCreationDTO) {
+
+        ResponseEntity<BaseResponse> jwtSession = validatedUserSession();
+        if (jwtSession != null) return jwtSession;
+
+
+        return new ResponseEntity<>(taskService.createTask(taskCreationDTO, userDetails), HttpStatus.OK);
+    }
+
 
 
     private ResponseEntity<BaseResponse> validatedUserSession() {
@@ -57,7 +73,7 @@ public class TaskController {
             response = ErrorResponse.ErrorResponseBuilder.anErrorResponse().build(ResponseCodeEnum.FAILED_AUTHENTICATION);
             return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         } else {
-            username = (UserDetails) request.getAttribute("user");
+            userDetails = (UserDetails) request.getAttribute("user");
         }
         return null;
     }
