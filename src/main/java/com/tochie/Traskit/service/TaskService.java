@@ -14,12 +14,13 @@ import com.tochie.Traskit.repository.TaskRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
+@Transactional
 public class TaskService {
 
 
@@ -36,6 +37,7 @@ public class TaskService {
         try {
             createNewTask(taskCreationDTO, (User) userDetails);
         } catch (Exception e){
+            log.warn("Error creating task : {}", e.getMessage());
             response.assignResponseCode(ResponseCodeEnum.PROCESSING_ERROR);
 
             return response;

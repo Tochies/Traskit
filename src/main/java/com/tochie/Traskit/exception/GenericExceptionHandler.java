@@ -2,6 +2,7 @@ package com.tochie.Traskit.exception;
 
 import com.tochie.Traskit.enums.Constants;
 import com.tochie.Traskit.enums.ResponseCodeEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
+@Slf4j
 @ControllerAdvice
 public class GenericExceptionHandler {
 
@@ -48,7 +50,7 @@ public class GenericExceptionHandler {
                 .withDescription(e.getMessage())
                 .withResponseCode(ResponseCodeEnum.SERVICE_FAILURE.getCode())
                 .build();
-
+        log.error("System error : ", e);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 

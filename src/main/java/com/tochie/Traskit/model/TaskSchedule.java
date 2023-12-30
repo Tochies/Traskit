@@ -20,7 +20,9 @@ public class TaskSchedule extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private ScheduleFrequency scheduleFrequency;
 
-    @JoinColumn(nullable = false)
+    @OneToOne
+    @JoinColumn(name = "taskFk", nullable = false)
     private Task taskFk;
+
 
 }
