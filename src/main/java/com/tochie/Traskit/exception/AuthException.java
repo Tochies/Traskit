@@ -2,15 +2,15 @@ package com.tochie.Traskit.exception;
 
 
 
-public class GenericException extends RuntimeException{
+public class AuthException extends RuntimeException{
 
     private static final long serialVersionUID = 1L;
 
-    public GenericException(String message) {
+    public AuthException(String message) {
         super(message);
     }
 
-    public GenericException(String message, Throwable cause) {
+    public AuthException(String message, Throwable cause) {
         super(message, cause);
     }
 }

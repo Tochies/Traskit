@@ -17,12 +17,12 @@ import java.util.List;
 @ControllerAdvice
 public class GenericExceptionHandler {
 
-    @ExceptionHandler(value = {GenericException.class})
-    public ResponseEntity<Object> handleGenericException(GenericException e){
+    @ExceptionHandler(value = {AuthException.class})
+    public ResponseEntity<Object> handleGenericException(AuthException e){
 
         HttpStatus badRequest = HttpStatus.BAD_REQUEST;
         ErrorResponse errorResponse = ErrorResponse.ErrorResponseBuilder.anErrorResponse()
-                .withErrorCategory(Constants.AUTH_ERROR).withDescription(e.getMessage())
+                .withDescription(e.getMessage())
                 .withResponseCode(ResponseCodeEnum.FAILED_AUTHENTICATION.getCode())
                 .build();
         return new ResponseEntity<>(errorResponse, badRequest);
@@ -38,6 +38,8 @@ public class GenericExceptionHandler {
                 .build();
         return new ResponseEntity<>(errorResponse, badRequest);
     }
+
+
 
     @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<Object> handleException(Exception e){
