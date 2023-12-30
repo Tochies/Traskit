@@ -1,5 +1,6 @@
 package com.tochie.Traskit.security;
 
+import com.tochie.Traskit.exception.AuthException;
 import com.tochie.Traskit.service.UserDetailsServiceImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -30,6 +31,8 @@ public class JwtService {
     @Value("${security.jwt.token.expire-length:600000}")
     private long validityInMilliseconds = 600000; // 10mins
 
+    @Value("${security.jwt.token.blacklist.enable:true}")
+    private Boolean blacklistUsedToken = true;
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
@@ -105,15 +108,17 @@ public class JwtService {
         try {
             final String username = extractUsername(token);
 
-            if(!validateTokenKey(token) | blacklistCache.containsKey(token) | username == null) return false;
-            blacklistCache.put(token, username);
+            if(!validateTokenKey(token) | blacklistCache.containsKey(token) | username == null) throw new AuthException("api authentication failed");
+
+            if(blacklistUsedToken) blacklistCache.put(token, username);
+
 
             userDetails = getUserDetails(username);
 
             return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e){
-            log.warn("JWTOtherException: {}", e.getMessage());
-         return false;
+            log.warn("JWTException: {}", e.getMessage());
+            throw new AuthException("api authentication failed");
         }
 
 
@@ -123,7 +128,8 @@ public class JwtService {
         try {
             Jwts.parserBuilder().setSigningKey(getSignKey()).build().parseClaimsJws(token);
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            log.warn("JWTException: {}", e.getMessage());
+            throw new AuthException("api authentication failed");
         }
 
         return true;
