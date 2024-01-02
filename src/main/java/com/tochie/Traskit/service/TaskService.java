@@ -11,6 +11,7 @@ import com.tochie.Traskit.model.TaskDetails;
 import com.tochie.Traskit.model.User;
 import com.tochie.Traskit.repository.TaskDetailsRepository;
 import com.tochie.Traskit.repository.TaskRepository;
+import com.tochie.Traskit.utils.GeneratorUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,9 @@ public class TaskService {
 
     @Autowired
     TaskDetailsRepository taskDetailsRepository;
+
+    @Autowired
+    GeneratorUtil generatorUtil;
 
     public BaseResponse createTask(TaskCreationDTO taskCreationDTO, UserDetails userDetails){
 
@@ -58,6 +62,7 @@ public class TaskService {
         if (taskCreationDTO.getTaskScheduleType() != null){
             task.setScheduleType(EnumUtils.getEnum(ScheduleType.class, taskCreationDTO.getTaskScheduleType()));
         }
+        task.setTaskReference(generatorUtil.generateUniqueString());
 
         TaskDetails taskDetails = new TaskDetails();
         taskDetails.setTaskFk(task);
