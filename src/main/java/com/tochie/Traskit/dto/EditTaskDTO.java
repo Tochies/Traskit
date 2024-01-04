@@ -9,10 +9,10 @@ import lombok.Data;
 public class EditTaskDTO {
 
 
-    @NotEmpty(message = "Please input name for your task")
+    @NotEmpty(message = "Please input a valid task reference")
     private String taskReference;
 
-    @NotEmpty(message = "Please input name for your task")
+    // @NotEmpty(message = "Please input name for your task")   // changing name should be optional as well
     private String taskName;
 
     private String taskContent;

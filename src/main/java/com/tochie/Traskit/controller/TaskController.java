@@ -5,17 +5,12 @@ import com.tochie.Traskit.dto.TaskCreationDTO;
 import com.tochie.Traskit.dto.apiresponse.BaseResponse;
 import com.tochie.Traskit.dto.apiresponse.ResponseData;
 import com.tochie.Traskit.enums.ResponseCodeEnum;
-import com.tochie.Traskit.exception.ErrorResponse;
 import com.tochie.Traskit.service.TaskService;
 import com.tochie.Traskit.service.UserAuth;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -23,11 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/task")
 public class TaskController {
 
-    @Autowired
-    private HttpServletRequest request;
-
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     @Autowired
     UserAuth userAuth;
@@ -60,16 +50,16 @@ public class TaskController {
         return new ResponseEntity<>(taskService.createTask(taskCreationDTO, userAuth.userDetails), HttpStatus.OK);
     }
 
-//    @PostMapping("/create-task")
-//    @ResponseBody
-//    public ResponseEntity<?> editTask(@Valid @RequestBody EditTaskDTO editTaskDTO) {
-//
-//        ResponseEntity<BaseResponse> jwtSession = userAuth.validatedUserSession();
-//        if (jwtSession != null) return jwtSession;
-//
-//
-//        return new ResponseEntity<>(taskService.createTask(taskCreationDTO, userAuth.userDetails), HttpStatus.OK);
-//    }
+    @PostMapping("/edit-task")
+    @ResponseBody
+    public ResponseEntity<?> editTask(@Valid @RequestBody EditTaskDTO editTaskDTO) {
+
+        ResponseEntity<BaseResponse> jwtSession = userAuth.validatedUserSession();
+        if (jwtSession != null) return jwtSession;
+
+
+        return new ResponseEntity<>(taskService.editTask(editTaskDTO, userAuth.userDetails), HttpStatus.OK);
+    }
 
 
 
