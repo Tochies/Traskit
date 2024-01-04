@@ -20,4 +20,7 @@ public class Task extends BaseEntity{
     @Enumerated(EnumType.STRING)
     private ScheduleType scheduleType;
 
+    @Column(length = 60)
+    private String taskReference;
+
 }
