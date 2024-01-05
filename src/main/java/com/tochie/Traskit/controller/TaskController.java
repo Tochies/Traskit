@@ -2,6 +2,7 @@ package com.tochie.Traskit.controller;
 
 import com.tochie.Traskit.dto.EditTaskDTO;
 import com.tochie.Traskit.dto.TaskCreationDTO;
+import com.tochie.Traskit.dto.TaskEventDTO;
 import com.tochie.Traskit.dto.apiresponse.BaseResponse;
 import com.tochie.Traskit.dto.apiresponse.ResponseData;
 import com.tochie.Traskit.enums.ResponseCodeEnum;
@@ -61,6 +62,16 @@ public class TaskController {
         return new ResponseEntity<>(taskService.editTask(editTaskDTO, userAuth.userDetails), HttpStatus.OK);
     }
 
+    @PostMapping("/create-task-event")
+    @ResponseBody
+    public ResponseEntity<?> createTaskEvent(@Valid @RequestBody TaskEventDTO taskEventDTO) {
+
+        ResponseEntity<BaseResponse> jwtSession = userAuth.validatedUserSession();
+        if (jwtSession != null) return jwtSession;
+
+
+        return new ResponseEntity<>(taskService.createTaskEvent(taskEventDTO, userAuth.userDetails), HttpStatus.OK);
+    }
 
 
 }
