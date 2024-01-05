@@ -14,8 +14,8 @@ public class TaskSchedule extends BaseEntity{
 
     private Timestamp firstRun;
     private Timestamp lastRun;
-    private Boolean recurring;          // Recurring means task runs hourly, daily or any of the schedule frequency
-    private Boolean continuousRun;      // Continuous run means the user can update the options/contents of the task anytime
+    private Boolean recurring = false;          // Recurring means task runs hourly, daily or any of the schedule frequency
+    private Boolean continuousRun = false;      // Continuous run means the user can update the options/contents of the task anytime
 
     @Enumerated(EnumType.STRING)
     private ScheduleFrequency scheduleFrequency;
